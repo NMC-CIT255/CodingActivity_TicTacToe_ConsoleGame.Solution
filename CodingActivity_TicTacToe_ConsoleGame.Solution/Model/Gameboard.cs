@@ -97,6 +97,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             // Confirm that the board position is empty
             // Note: gameboardPosition converted to array index by subtracting 1
             //
+
             if (_positionState[gameboardPosition.Row - 1, gameboardPosition.Column - 1] == PlayerPiece.None)
             {
                 return true;

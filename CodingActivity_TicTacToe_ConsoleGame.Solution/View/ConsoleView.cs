@@ -27,14 +27,12 @@ namespace CodingActivity_TicTacToe_ConsoleGame
         private const int POSITIONPROMPT_VERTICAL_LOCATION = 12;
         private const int POSITIONPROMPT_HORIZONTAL_LOCATION = 3;
 
+        private const int MESSAGEBOX_VERTICAL_LOCATION = 15;
+
         private const int TOP_LEFT_ROW = 3;
         private const int TOP_LEFT_COLUMN = 6;
-        //private const int MAX_NUM_WINDOW_ROWS = 30;
-        //private const int MAX_NUM_WINDOW_COLUMNS = 60;
-
 
         private Gameboard _gameboard;
-
         private ViewState _currentViewStat;
 
         #endregion
@@ -110,6 +108,36 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             System.Environment.Exit(1);
         }
 
+        /// <summary>
+        /// display the session timed out screen
+        /// </summary>
+        public void DisplayTimedOutScreen()
+        {
+            ConsoleUtil.HeaderText = "Session Timed Out!";
+            ConsoleUtil.DisplayReset();
+
+            DisplayMessageBox("It appears your session has timed out.");
+
+            DisplayContinuePrompt();
+        }
+
+        /// <summary>
+        /// display the session timed out screen
+        /// </summary>
+        public void DisplayMaxAttemptsReachedScreen()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            ConsoleUtil.HeaderText = "Maximum Attempts Reached!";
+            ConsoleUtil.DisplayReset();
+
+            sb.Append(" It appears that you are having difficulty entering your");
+            sb.Append(" choice. Please refer to the instructions and play again.");
+
+            DisplayMessageBox(sb.ToString());
+
+            DisplayContinuePrompt();
+        }
 
         /// <summary>
         /// display the welcome screen
@@ -145,13 +173,20 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             ConsoleUtil.DisplayReset();
 
             DisplayGameboard();
-            //DisplayMessageBox();
-            //DisplayGameStatus();
+            DisplayGameStatus();
         }
 
-        private void DisplayGameStatus()
+        public void DisplayCurrentPlayerStatus()
         {
-            Console.SetCursorPosition(TOP_LEFT_COLUMN, TOP_LEFT_ROW + 12);
+            ConsoleUtil.HeaderText = "Current Player Status";
+            ConsoleUtil.DisplayReset();
+
+            DisplayContinuePrompt();
+        }
+
+        public void DisplayGameStatus()
+        {
+            StringBuilder sb = new StringBuilder();
 
             switch (_gameboard.CurrentGameState)
             {
@@ -161,49 +196,58 @@ namespace CodingActivity_TicTacToe_ConsoleGame
                     //
                     break;
                 case Gameboard.GameState.PlayerXTurn:
-                    DisplayMessage("It is currently Player X's turn.", "", "");
+                    DisplayMessageBox("It is currently Player X's turn.");
                     break;
                 case Gameboard.GameState.PlayerOTurn:
-                    DisplayMessage("It is currently Player O's turn.", "", "");
+                    DisplayMessageBox("It is currently Player O's turn.");
                     break;
                 case Gameboard.GameState.PlayerXWin:
-                    DisplayMessage("Player X Wins!!!", "", "");
+                    DisplayMessageBox("Player X Wins! Press any key to continue.");
+
+                    Console.CursorVisible = false;
+                    Console.ReadKey();
+                    Console.CursorVisible = true;
                     break;
                 case Gameboard.GameState.PlayerOWin:
-                    DisplayMessage("Player O Wins!!!", "", "");
+                    DisplayMessageBox("Player O Wins! Press any key to continue.");
+
+                    Console.CursorVisible = false;
+                    Console.ReadKey();
+                    Console.CursorVisible = true;
                     break;
                 case Gameboard.GameState.CatsGame:
-                    DisplayMessage("Cat Game!!!", "", "");
+                    DisplayMessageBox("Cat Game! Press any key to continue.");
+
+                    Console.CursorVisible = false;
+                    Console.ReadKey();
+                    Console.CursorVisible = true;
                     break;
                 default:
                     break;
             }
         }
 
-        public void DisplayMessage(string messageLine1, string messageLine2, string messageLine3)
+
+        public void DisplayMessageBox(string message)
         {
-            //
-            // Display new message
-            //
-            Console.SetCursorPosition(8, 22);
-            Console.Write(messageLine1);
-            Console.SetCursorPosition(8, 23);
-            Console.Write(messageLine2);
-            Console.SetCursorPosition(8, 24);
-            Console.Write(messageLine3);
+            string leftMargin = new String(' ', ConsoleConfig.displayHorizontalMargin);
+            string topBottom = new String('*', ConsoleConfig.windowWidth - 2 * ConsoleConfig.displayHorizontalMargin);
+
+            StringBuilder sb = new StringBuilder();
+
+            Console.SetCursorPosition(0, MESSAGEBOX_VERTICAL_LOCATION);
+            Console.WriteLine(leftMargin + topBottom);
+
+            Console.WriteLine(ConsoleUtil.Center("Game Status"));
+
+            ConsoleUtil.DisplayMessage(message);
+
+            Console.WriteLine(Environment.NewLine + leftMargin + topBottom);
         }
 
-        public void DisplayMessageBox()
-        {
-            Console.SetCursorPosition(0, TOP_LEFT_ROW + 17);
-            Console.WriteLine("     ***************************************************");
-            for (int rows = 0; rows < 5; rows++)
-            {
-                Console.WriteLine("     *                                                 *");
-            }
-            Console.WriteLine("     ***************************************************");
-        }
-
+        /// <summary>
+        /// display the current game board
+        /// </summary>
         private void DisplayGameboard()
         {
             //
@@ -235,30 +279,37 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
         }
 
-        private void DisplayPositionPropmt(string coordinateType)
+        /// <summary>
+        /// display prompt for a player's next move
+        /// </summary>
+        /// <param name="coordinateType"></param>
+        private void DisplayPositionPrompt(string coordinateType)
         {
             //
             // Clear line by overwriting with spaces
             //
             Console.SetCursorPosition(POSITIONPROMPT_HORIZONTAL_LOCATION, POSITIONPROMPT_VERTICAL_LOCATION);
-            //Console.Write(new String(' ', ConsoleConfig.windowWidth));
+            Console.Write(new String(' ', ConsoleConfig.windowWidth));
             //
             // Write new prompt
             //
-            //Console.SetCursorPosition(TOP_LEFT_COLUMN, TOP_LEFT_ROW + 14);
+            Console.SetCursorPosition(POSITIONPROMPT_HORIZONTAL_LOCATION, POSITIONPROMPT_VERTICAL_LOCATION);
             Console.Write("Enter " + coordinateType + " number: ");
         }
 
         public void DisplayMaxAttemptsMessage()
         {
-            Console.Clear();
-            Console.SetCursorPosition(0, 10);
-            Console.WriteLine(" It appears that you are having difficulty entering your");
-            Console.WriteLine(" choice. Please refer to the instructions and play again.");
-            Console.WriteLine();
-            Console.WriteLine("           Press the (Enter) key to Exit.");
+            StringBuilder sb = new StringBuilder();
 
-            Console.ReadLine();
+            sb.Append(" It appears that you are having difficulty entering your");
+            sb.Append(" choice. Please refer to the instructions and play again.");
+            sb.Append(" Press any key to end the round.");
+
+            DisplayMessageBox(sb.ToString());
+
+            Console.CursorVisible = false;
+            Console.ReadKey();
+            Console.CursorVisible = true;
         }
 
         public GameboardPosition GetPlayerPositionChoice(GameboardPosition gameboardPosition)
@@ -270,14 +321,14 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             gameboardPosition.Column = -1;
 
             //
-            // Get row number from player
+            // Get row number from player.
             //
             gameboardPosition.Row = PlayerCoordinateChoice("Row");
 
             //
-            // Player successfully entered row number, get column number
+            // Get column number.
             //
-            if (CurrentViewState == ViewState.Active)
+            if (CurrentViewState != ViewState.PlayerUsedMaxAttempts)
             {
                 gameboardPosition.Column = PlayerCoordinateChoice("Column");
             }
@@ -286,6 +337,11 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
         }
 
+        /// <summary>
+        /// Validate the player's coordinate response for integer and range
+        /// </summary>
+        /// <param name="coordinateType">an integer value within proper range or -1</param>
+        /// <returns></returns>
         private int PlayerCoordinateChoice(string coordinateType)
         {
             int tempCoordinate = -1;
@@ -294,7 +350,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
             while ((numOfPlayerAttempts <= maxNumOfPlayerAttempts))
             {
-                DisplayPositionPropmt(coordinateType);
+                DisplayPositionPrompt(coordinateType);
 
                 if (int.TryParse(Console.ReadLine(), out tempCoordinate))
                 {
@@ -310,7 +366,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
                     //
                     else
                     {
-                        DisplayMessage(coordinateType + " numbers are limited to (1,2,3)", "", "");
+                        DisplayMessageBox(coordinateType + " numbers are limited to (1,2,3)");
                     }
                 }
                 //
@@ -318,7 +374,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
                 //
                 else
                 {
-                    DisplayMessage(coordinateType + " numbers are limited to (1,2,3)", "", "");
+                    DisplayMessageBox(coordinateType + " numbers are limited to (1,2,3)");
                 }
 
                 //

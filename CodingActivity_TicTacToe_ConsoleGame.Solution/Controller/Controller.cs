@@ -111,7 +111,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             _gameView.DisplayGameArea();
 
             //
-            // Initialize gameboard status
+            // Initialize game board status
             //
             _gameboard.CurrentGameState = Gameboard.GameState.NewGame;
 
@@ -125,55 +125,60 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             {
                 while (_playingRound)
                 {
-                    _gameboard.UpdateGameboardState();
-
-                    _gameView.DisplayGameArea();
-
-                    switch (_gameboard.CurrentGameState)
+                    switch (_gameView.CurrentViewState)
                     {
-                        case Gameboard.GameState.NewGame:
-                            //
-                            // The new game status should not be an option here
-                            //
-                            break;
+                        case ConsoleView.ViewState.Active:
+                            _gameboard.UpdateGameboardState();
 
-                        case Gameboard.GameState.PlayerXTurn:
-                            currentPlayerPiece = Gameboard.PlayerPiece.X;
+                            _gameView.DisplayGameArea();
 
-                            GetPlayerPositionChoice(gameboardPosition);
-
-                            if (_gameView.CurrentViewState == ConsoleView.ViewState.Active)
+                            switch (_gameboard.CurrentGameState)
                             {
-                                _gameboard.SetPlayerPiece(gameboardPosition, currentPlayerPiece);
+                                case Gameboard.GameState.NewGame:// The new game status should not be an option here
+                                    break;
+
+                                case Gameboard.GameState.PlayerXTurn:
+                                    currentPlayerPiece = Gameboard.PlayerPiece.X;
+
+                                    GetPlayerPositionChoice(gameboardPosition);
+
+                                    if (_gameView.CurrentViewState == ConsoleView.ViewState.Active)
+                                    {
+                                        _gameboard.SetPlayerPiece(gameboardPosition, currentPlayerPiece);
+                                    }
+                                    break;
+
+                                case Gameboard.GameState.PlayerOTurn:
+                                    currentPlayerPiece = Gameboard.PlayerPiece.O;
+
+                                    GetPlayerPositionChoice(gameboardPosition);
+
+                                    if (_gameView.CurrentViewState == ConsoleView.ViewState.Active)
+                                    {
+                                        _gameboard.SetPlayerPiece(gameboardPosition, currentPlayerPiece);
+                                    }
+                                    break;
+
+                                case Gameboard.GameState.PlayerXWin:
+                                case Gameboard.GameState.PlayerOWin:
+                                case Gameboard.GameState.CatsGame:
+                                    _playingRound = false;
+                                    break;
+
+                                default:
+                                    break;
                             }
                             break;
-
-                        case Gameboard.GameState.PlayerOTurn:
-                            currentPlayerPiece = Gameboard.PlayerPiece.O;
-                            
-                            GetPlayerPositionChoice(gameboardPosition);
-
-                            if (_gameView.CurrentViewState == ConsoleView.ViewState.Active)
-                            {
-                                _gameboard.SetPlayerPiece(gameboardPosition, currentPlayerPiece);
-                            }
+                        case ConsoleView.ViewState.PlayerTimedOut:
+                            _gameView.DisplayTimedOutScreen();
                             break;
-
-                        case Gameboard.GameState.PlayerXWin:
-                            _playingRound = false;
+                        case ConsoleView.ViewState.PlayerUsedMaxAttempts:
+                            _gameView.DisplayMaxAttemptsReachedScreen();
                             break;
-
-                        case Gameboard.GameState.PlayerOWin:
-                            _playingRound = false;
-                            break;
-
-                        case Gameboard.GameState.CatsGame:
-                            _playingRound = false;
-                            break;
-
                         default:
                             break;
                     }
+ 
                 }
 
                 //
@@ -188,6 +193,10 @@ namespace CodingActivity_TicTacToe_ConsoleGame
                     // Terminate the Game
                     //
                     Environment.Exit(0);
+                }
+                else
+                {
+                    _gameView.DisplayCurrentPlayerStatus();
                 }
             }
 
@@ -207,15 +216,19 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             _gameView.GetPlayerPositionChoice(gameboardPosition);
 
             //
-            // Player input a position that was taken
-            //
-            while (!_gameboard.IsValidMove(gameboardPosition))
+            // Player entered a valid location, check to see if it is free.
+            if (_gameView.CurrentViewState != ConsoleView.ViewState.PlayerUsedMaxAttempts)
             {
-                _gameView.DisplayMessage("That position on the board is not available.",
-                    "Please enter a new position.",
-                    "");
+                while (!_gameboard.IsValidMove(gameboardPosition))
+                {
+                    _gameView.DisplayMessageBox("That position on the board is not available.");
 
-                _gameView.GetPlayerPositionChoice(gameboardPosition);
+                    _gameView.GetPlayerPositionChoice(gameboardPosition);
+                }
+            }
+            else
+            {
+                _playingRound = false;
             }
 
             return gameboardPosition;
