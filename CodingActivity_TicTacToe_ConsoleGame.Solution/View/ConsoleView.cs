@@ -22,10 +22,16 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
         #region FIELDS
 
+        private const int GAMEBOARD_VERTICAL_LOCATION = 4;
+
+        private const int POSITIONPROMPT_VERTICAL_LOCATION = 12;
+        private const int POSITIONPROMPT_HORIZONTAL_LOCATION = 3;
+
         private const int TOP_LEFT_ROW = 3;
-        private const int TOP_LEFT_COLUMN = 3;
-        private const int MAX_NUM_WINDOW_ROWS = 30;
-        private const int MAX_NUM_WINDOW_COLUMNS = 60;
+        private const int TOP_LEFT_COLUMN = 6;
+        //private const int MAX_NUM_WINDOW_ROWS = 30;
+        //private const int MAX_NUM_WINDOW_COLUMNS = 60;
+
 
         private Gameboard _gameboard;
 
@@ -49,46 +55,98 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             _gameboard = gameboard;
             _currentViewStat = ViewState.Active;
 
-            DisplaySetup();
+            InitializeConsole();
         }
 
         #endregion
 
         #region METHODS
 
-        public void DisplaySetup()
+        /// <summary>
+        /// configure the console window
+        /// </summary>
+        public void InitializeConsole()
         {
-            Console.SetWindowSize(MAX_NUM_WINDOW_COLUMNS, MAX_NUM_WINDOW_ROWS);
-            Console.BackgroundColor = ConsoleColor.Gray;
-            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            ConsoleUtil.WindowWidth = ConsoleConfig.windowWidth;
+            ConsoleUtil.WindowHeight = ConsoleConfig.windowHeight;
 
+            Console.BackgroundColor = ConsoleConfig.bodyBackgroundColor;
+            Console.ForegroundColor = ConsoleConfig.bodyBackgroundColor;
+
+            ConsoleUtil.WindowTitle = "The Tic-tac-toe Game";
         }
 
+        /// <summary>
+        /// display the Continue prompt
+        /// </summary>
+        public void DisplayContinuePrompt()
+        {
+            Console.CursorVisible = false;
+
+            Console.WriteLine();
+
+            ConsoleUtil.DisplayMessage("Press any key to continue.");
+            ConsoleKeyInfo response = Console.ReadKey();
+
+            Console.WriteLine();
+
+            Console.CursorVisible = true;
+        }
+
+        /// <summary>
+        /// display the Exit prompt on a clean screen
+        /// </summary>
+        public void DisplayExitPrompt()
+        {
+            ConsoleUtil.DisplayReset();
+
+            Console.CursorVisible = false;
+
+            Console.WriteLine();
+            ConsoleUtil.DisplayMessage("Thank you for play the game. Press any key to Exit.");
+
+            Console.ReadKey();
+
+            System.Environment.Exit(1);
+        }
+
+
+        /// <summary>
+        /// display the welcome screen
+        /// </summary>
         public void DisplayWelcomeScreen()
         {
-            Console.Clear();
+            StringBuilder sb = new StringBuilder();
 
-            Console.SetCursorPosition(3, 3);
-            Console.WriteLine("\t    Welcome to Tic-tac-toc");
-            Console.WriteLine("\t   Laughing Leaf Productions\n\n");
-            Console.WriteLine("\tPress the ENTER key to continue.");
-            Console.ReadLine();
+            ConsoleUtil.HeaderText = "The Tic-tac-toe Game";
+            ConsoleUtil.DisplayReset();
+
+            ConsoleUtil.DisplayMessage("Written by John Velis");
+            ConsoleUtil.DisplayMessage("Northwestern Michigan College");
+            Console.WriteLine();
+
+            sb.Clear();
+            sb.AppendFormat("This application is designed to allow two players to play ");
+            sb.AppendFormat("a game of tic-tac-toe. The rules are the standard rules for the ");
+            sb.AppendFormat("game with each player taking a turn.");
+            ConsoleUtil.DisplayMessage(sb.ToString());
+            Console.WriteLine();
+
+            sb.Clear();
+            sb.AppendFormat("Your first task will be to set up your account details.");
+            ConsoleUtil.DisplayMessage(sb.ToString());
+
+            DisplayContinuePrompt();
         }
 
         public void DisplayGameArea()
         {
-            Console.Clear();
+            ConsoleUtil.HeaderText = "Current Game Board";
+            ConsoleUtil.DisplayReset();
 
-            DisplayGameHeader();
             DisplayGameboard();
-            DisplayMessageBox();
-            DisplayGameStatus();
-        }
-
-        private void DisplayGameHeader()
-        {
-            Console.SetCursorPosition(TOP_LEFT_COLUMN, TOP_LEFT_ROW);
-            Console.Write("\t\t      Current Game Board");
+            //DisplayMessageBox();
+            //DisplayGameStatus();
         }
 
         private void DisplayGameStatus()
@@ -148,14 +206,16 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
         private void DisplayGameboard()
         {
+            //
+            // move cursor below header
+            //
+            Console.SetCursorPosition(0, GAMEBOARD_VERTICAL_LOCATION);
 
-            Console.SetCursorPosition(TOP_LEFT_COLUMN, TOP_LEFT_ROW + 2);
-
-            Console.Write("\n\t\t        |---+---+---|\n");
+            Console.Write("\t\t\t        |---+---+---|\n");
 
             for (int i = 0; i < 3; i++)
             {
-                Console.Write("\t\t        | ");
+                Console.Write("\t\t\t        | ");
 
                 for (int j = 0; j < 3; j++)
                 {
@@ -170,7 +230,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
                 }
 
-                Console.Write("\n\t\t        |---+---+---|\n");
+                Console.Write("\n\t\t\t        |---+---+---|\n");
             }
 
         }
@@ -178,14 +238,14 @@ namespace CodingActivity_TicTacToe_ConsoleGame
         private void DisplayPositionPropmt(string coordinateType)
         {
             //
-            // Clear line
+            // Clear line by overwriting with spaces
             //
-            Console.SetCursorPosition(TOP_LEFT_COLUMN, TOP_LEFT_ROW + 14);
-            Console.Write(new String(' ', Console.BufferWidth));
+            Console.SetCursorPosition(POSITIONPROMPT_HORIZONTAL_LOCATION, POSITIONPROMPT_VERTICAL_LOCATION);
+            //Console.Write(new String(' ', ConsoleConfig.windowWidth));
             //
-            // Write prompt
+            // Write new prompt
             //
-            Console.SetCursorPosition(TOP_LEFT_COLUMN, TOP_LEFT_ROW + 14);
+            //Console.SetCursorPosition(TOP_LEFT_COLUMN, TOP_LEFT_ROW + 14);
             Console.Write("Enter " + coordinateType + " number: ");
         }
 

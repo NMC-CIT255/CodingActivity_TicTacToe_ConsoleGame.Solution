@@ -43,6 +43,63 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
         #region METHODS
 
+        //public void GameLoop()
+        //{
+        //    //
+        //    // Initialize new game
+        //    //
+        //    InitializeGame();
+
+        //    //
+        //    // Display the Welcome Screen with application Quit option
+        //    //
+        //    DisplayWelcomeScreen();
+
+        //    //
+        //    // Display the game rules
+        //    //
+        //    DisplayRulesScreen();
+
+        //    //
+        //    // Game loop
+        //    // 
+        //    while (playingGame)
+        //    {
+        //        //
+        //        // Initialize new round
+        //        //
+        //        InitializeRound();
+
+        //        //
+        //        // Round loop
+        //        // 
+        //        while (playingRound)
+        //        {
+        //            //
+        //            // Display the player guess screen and return the player's guess
+        //            //
+        //            playersGuess = DisplayGetPlayersGuessScreen();
+
+        //            //
+        //            // Evaluate the player's guess and provide the player feedback
+        //            //
+        //            DisplayPlayerGuessFeedback();
+
+        //            //
+        //            // Update round variables, process the results and provide player feedback
+        //            //
+        //            UpdateAndDisplayRoundStatus();
+        //        }
+
+        //        //
+        //        // Round complete, display player stats and prompt to Continue/Quit
+        //        //
+        //        DisplayPlayerStats();
+        //    }
+
+        //    DisplayClosingScreen();
+        //}
+
         /// <summary>
         /// Game Loop
         /// </summary>

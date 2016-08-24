@@ -95,6 +95,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
         {
             //
             // Confirm that the board position is empty
+            // Note: gameboardPosition converted to array index by subtracting 1
             //
             if (_positionState[gameboardPosition.Row - 1, gameboardPosition.Column - 1] == PlayerPiece.None)
             {
@@ -221,11 +222,17 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             return false;
         }
 
+        /// <summary>
+        /// add player's move to the game board
+        /// </summary>
+        /// <param name="gameboardPosition"></param>
+        /// <param name="PlayerPiece"></param>
         public void SetPlayerPiece(GameboardPosition gameboardPosition, PlayerPiece PlayerPiece)
 
         {
             //
             // Row and column value adjusted to match array structure
+            // Note: gameboardPosition converted to array index by subtracting 1
             //
             _positionState[gameboardPosition.Row - 1, gameboardPosition.Column - 1] = PlayerPiece;
         }
