@@ -22,7 +22,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
         public enum GameState
         {
-            NewGame,
+            NewRound,
             PlayerXTurn,
             PlayerOTurn,
             PlayerXWin,
@@ -68,7 +68,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
         {
             _positionState = new PlayerPiece[MAX_NUM_OF_ROWS_COLUMNS, MAX_NUM_OF_ROWS_COLUMNS];
 
-            _currentGameState = GameState.NewGame;
+            _currentGameState = GameState.NewRound;
 
             InitializeGameboard();
         }

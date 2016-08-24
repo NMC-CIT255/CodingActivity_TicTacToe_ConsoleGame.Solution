@@ -122,7 +122,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
         }
 
         /// <summary>
-        /// display the session timed out screen
+        /// display the maximum attempts reached screen
         /// </summary>
         public void DisplayMaxAttemptsReachedScreen()
         {
@@ -190,7 +190,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
             switch (_gameboard.CurrentGameState)
             {
-                case Gameboard.GameState.NewGame:
+                case Gameboard.GameState.NewRound:
                     //
                     // The new game status should not be an necessary option here
                     //
@@ -336,6 +336,8 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             return gameboardPosition;
 
         }
+
+
 
         /// <summary>
         /// Validate the player's coordinate response for integer and range
