@@ -68,7 +68,15 @@ namespace CodingActivity_TicTacToe_ConsoleGame
                     ManageGameStateTasks();
                     _gameboard.UpdateGameboardState();
                 }
+
                 _gameView.DisplayCurrentPlayerStatus();
+
+                if (_gameView.DisplayNewRoundPrompt())
+                {
+                    _gameboard.InitializeGameboard();
+                    _gameView.InitializeView();
+                    _playingRound = true;
+                }
             }
         }
 
@@ -92,12 +100,14 @@ namespace CodingActivity_TicTacToe_ConsoleGame
                             break;
 
                         case Gameboard.GameState.PlayerXTurn:
-                            currentPlayerPiece = Gameboard.PlayerPiece.X;
-                            _gameView.GetPlayerPositionChoice(gameboardPosition);
-                            if (_gameView.CurrentViewState == ConsoleView.ViewState.Active)
-                            {
-                            _gameboard.SetPlayerPiece(gameboardPosition, currentPlayerPiece);
-                            }
+                            ManagePlayerTurn(Gameboard.PlayerPiece.X);
+
+                            //currentPlayerPiece = Gameboard.PlayerPiece.X;
+                            //_gameView.GetPlayerPositionChoice(gameboardPosition);
+                            //if (_gameView.CurrentViewState == ConsoleView.ViewState.Active)
+                            //{
+                            //_gameboard.SetPlayerPiece(gameboardPosition, currentPlayerPiece);
+                            //}
                             break;
 
                         case Gameboard.GameState.PlayerOTurn:
@@ -121,12 +131,25 @@ namespace CodingActivity_TicTacToe_ConsoleGame
                     break;
                 case ConsoleView.ViewState.PlayerTimedOut:
                     _gameView.DisplayTimedOutScreen();
+                    _playingRound = false;
                     break;
                 case ConsoleView.ViewState.PlayerUsedMaxAttempts:
                     _gameView.DisplayMaxAttemptsReachedScreen();
+                    _playingRound = false;
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void ManagePlayerTurn(Gameboard.PlayerPiece currentPlayerPiece)
+        {
+            GameboardPosition gameboardPosition = new GameboardPosition();
+
+            _gameView.GetPlayerPositionChoice(gameboardPosition);
+            if (_gameView.CurrentViewState == ConsoleView.ViewState.Active)
+            {
+                _gameboard.SetPlayerPiece(gameboardPosition, currentPlayerPiece);
             }
         }
 

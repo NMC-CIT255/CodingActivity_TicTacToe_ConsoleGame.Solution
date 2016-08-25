@@ -51,12 +51,19 @@ namespace CodingActivity_TicTacToe_ConsoleGame
         public ConsoleView(Gameboard gameboard)
         {
             _gameboard = gameboard;
+
+            InitializeView();
+
+        }
+
+        #endregion
+
+        public void InitializeView()
+        {
             _currentViewStat = ViewState.Active;
 
             InitializeConsole();
         }
-
-        #endregion
 
         #region METHODS
 
@@ -184,6 +191,18 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             DisplayContinuePrompt();
         }
 
+        public bool DisplayNewRoundPrompt()
+        {
+            ConsoleUtil.HeaderText = "Continue or Quit";
+            ConsoleUtil.DisplayReset();
+
+            ConsoleUtil.DisplayPromptMessage("Do you want to play another round?");
+
+            DisplayContinuePrompt();
+
+            return true;
+        }
+
         public void DisplayGameStatus()
         {
             StringBuilder sb = new StringBuilder();
@@ -297,20 +316,6 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             Console.Write("Enter " + coordinateType + " number: ");
         }
 
-        public void DisplayMaxAttemptsMessage()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append(" It appears that you are having difficulty entering your");
-            sb.Append(" choice. Please refer to the instructions and play again.");
-            sb.Append(" Press any key to end the round.");
-
-            DisplayMessageBox(sb.ToString());
-
-            Console.CursorVisible = false;
-            Console.ReadKey();
-            Console.CursorVisible = true;
-        }
 
         public GameboardPosition GetPlayerPositionChoice(GameboardPosition gameboardPosition)
         {
@@ -336,8 +341,6 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             return gameboardPosition;
 
         }
-
-
 
         /// <summary>
         /// Validate the player's coordinate response for integer and range
