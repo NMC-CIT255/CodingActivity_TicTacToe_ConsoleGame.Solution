@@ -20,7 +20,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             None
         }
 
-        public enum GameState
+        public enum GameboardState
         {
             NewRound,
             PlayerXTurn,
@@ -38,7 +38,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
         private PlayerPiece[,] _positionState;
 
-        private GameState _currentGameState;
+        private GameboardState _currentRoundState;
 
         #endregion
 
@@ -55,10 +55,10 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             set { _positionState = value; }
         }
 
-        public GameState CurrentGameState
+        public GameboardState CurrentRoundState
         {
-            get { return _currentGameState; }
-            set { _currentGameState = value; }
+            get { return _currentRoundState; }
+            set { _currentRoundState = value; }
         }
         #endregion
 
@@ -75,9 +75,12 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
         #region METHODS
 
+        /// <summary>
+        /// fill the game board array with "None" values
+        /// </summary>
         public void InitializeGameboard()
         {
-            _currentGameState = GameState.NewRound;
+            _currentRoundState = GameboardState.NewRound;
 
             //
             // Set all PlayerPiece array values to "None"
@@ -91,7 +94,13 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             }
         }
 
-        public bool IsValidMove(GameboardPosition gameboardPosition)
+
+        /// <summary>
+        /// Determine if the game board position is taken
+        /// </summary>
+        /// <param name="gameboardPosition"></param>
+        /// <returns>true if position is open</returns>
+        public bool GameboardPositionAvailable(GameboardPosition gameboardPosition)
         {
             //
             // Confirm that the board position is empty
@@ -108,52 +117,31 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             }
         }
 
+        /// <summary>
+        /// Update the game board state if a player wins or a cat's game happens.
+        /// </summary>
         public void UpdateGameboardState()
         {
-            //
-            // All positions filled
-            //
-            if (IsCatsGame())
+            if (ThreeInARow(PlayerPiece.X))
             {
-                _currentGameState = GameState.CatsGame;
-            }
-            //
-            // A player X has won
-            //
-            else if (ThreeInARow(PlayerPiece.X))
-            {
-                _currentGameState = GameState.PlayerXWin;
+                _currentRoundState = GameboardState.PlayerXWin;
             }
             //
             // A player O has won
             //
             else if (ThreeInARow(PlayerPiece.O))
             {
-                _currentGameState = GameState.PlayerOWin;
+                _currentRoundState = GameboardState.PlayerOWin;
             }
             //
-            // Player O's turn
+            // All positions filled
             //
-            else if (_currentGameState == GameState.PlayerXTurn)
+            else if (IsCatsGame())
             {
-                _currentGameState = GameState.PlayerOTurn;
-            }
-            //
-            // Player X's turn
-            //
-            else if (_currentGameState == GameState.PlayerOTurn)
-            {
-                _currentGameState = GameState.PlayerXTurn;
-            }
-            //
-            // New game (start with player X)
-            //
-            else
-            {
-                _currentGameState = GameState.PlayerXTurn;
+                _currentRoundState = GameboardState.CatsGame;
             }
         }
-
+        
         public bool IsCatsGame()
         {
             //
@@ -172,6 +160,11 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             return true;
         }
 
+        /// <summary>
+        /// Check for any three in a row.
+        /// </summary>
+        /// <param name="playerPieceToCheck">Player's game piece to check</param>
+        /// <returns>true if a player has won</returns>
         private bool ThreeInARow(PlayerPiece playerPieceToCheck)
         {
             //
@@ -224,20 +217,37 @@ namespace CodingActivity_TicTacToe_ConsoleGame
         }
 
         /// <summary>
-        /// add player's move to the game board
+        /// Add player's move to the game board.
         /// </summary>
         /// <param name="gameboardPosition"></param>
         /// <param name="PlayerPiece"></param>
         public void SetPlayerPiece(GameboardPosition gameboardPosition, PlayerPiece PlayerPiece)
-
         {
             //
             // Row and column value adjusted to match array structure
             // Note: gameboardPosition converted to array index by subtracting 1
             //
             _positionState[gameboardPosition.Row - 1, gameboardPosition.Column - 1] = PlayerPiece;
+
+            SetNextPlayer();
+        }
+
+        /// <summary>
+        /// Switch the game board state to the next player
+        /// </summary>
+        private void SetNextPlayer()
+        {
+            if (_currentRoundState == GameboardState.PlayerXTurn)
+            {
+                _currentRoundState = GameboardState.PlayerOTurn;
+            }
+            else
+            {
+                _currentRoundState = GameboardState.PlayerXTurn;
+            }
         }
 
         #endregion
     }
 }
+

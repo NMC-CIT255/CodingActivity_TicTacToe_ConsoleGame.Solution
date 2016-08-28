@@ -149,6 +149,26 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             DisplayContinuePrompt();
         }
 
+
+
+        /// <summary>
+        /// Inform the player that their position choice is not available
+        /// </summary>
+        public void DisplayGamePositionChoiceNotAvailableScreen()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            ConsoleUtil.HeaderText = "Position Choice Unavailable";
+            ConsoleUtil.DisplayReset();
+
+            sb.Append(" It appears that you have chosen a position that is all ready");
+            sb.Append(" taken. Please try again.");
+
+            DisplayMessageBox(sb.ToString());
+
+            DisplayContinuePrompt();
+        }
+
         /// <summary>
         /// display the welcome screen
         /// </summary>
@@ -204,12 +224,19 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             ConsoleUtil.HeaderText = "Current Game Status";
             ConsoleUtil.DisplayReset();
 
+            int catsGames = roundsPlayed - playerXWins - playerOWins;
             double playerXPercentageWins = (double)playerXWins / roundsPlayed;
             double playerOPercentageWins = (double)playerOWins / roundsPlayed;
+            //
+            // Cat's games are calculated as a function of player win percentages to ensure
+            // all percentages add up to 100.
+            //
+            double percentageOfCatsGames = 1.0 - playerXPercentageWins - playerOPercentageWins;
 
             ConsoleUtil.DisplayMessage("Rounds Played: " + roundsPlayed);
             ConsoleUtil.DisplayMessage("Rounds for Player X: " + playerXWins + " - " + String.Format("{0:P2}", playerXPercentageWins));
             ConsoleUtil.DisplayMessage("Rounds for Player O: " + playerOWins + " - " + String.Format("{0:P2}", playerOPercentageWins));
+            ConsoleUtil.DisplayMessage("Cat's Games: " + catsGames + " - " + String.Format("{0:P2}", percentageOfCatsGames));
 
             DisplayContinuePrompt();
         }
@@ -226,35 +253,35 @@ namespace CodingActivity_TicTacToe_ConsoleGame
         {
             StringBuilder sb = new StringBuilder();
 
-            switch (_gameboard.CurrentGameState)
+            switch (_gameboard.CurrentRoundState)
             {
-                case Gameboard.GameState.NewRound:
+                case Gameboard.GameboardState.NewRound:
                     //
                     // The new game status should not be an necessary option here
                     //
                     break;
-                case Gameboard.GameState.PlayerXTurn:
+                case Gameboard.GameboardState.PlayerXTurn:
                     DisplayMessageBox("It is currently Player X's turn.");
                     break;
-                case Gameboard.GameState.PlayerOTurn:
+                case Gameboard.GameboardState.PlayerOTurn:
                     DisplayMessageBox("It is currently Player O's turn.");
                     break;
-                case Gameboard.GameState.PlayerXWin:
+                case Gameboard.GameboardState.PlayerXWin:
                     DisplayMessageBox("Player X Wins! Press any key to continue.");
 
                     Console.CursorVisible = false;
                     Console.ReadKey();
                     Console.CursorVisible = true;
                     break;
-                case Gameboard.GameState.PlayerOWin:
+                case Gameboard.GameboardState.PlayerOWin:
                     DisplayMessageBox("Player O Wins! Press any key to continue.");
 
                     Console.CursorVisible = false;
                     Console.ReadKey();
                     Console.CursorVisible = true;
                     break;
-                case Gameboard.GameState.CatsGame:
-                    DisplayMessageBox("Cat Game! Press any key to continue.");
+                case Gameboard.GameboardState.CatsGame:
+                    DisplayMessageBox("Cat's Game! Press any key to continue.");
 
                     Console.CursorVisible = false;
                     Console.ReadKey();
@@ -375,6 +402,11 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             return yesNoChoice;
         }
 
+        /// <summary>
+        /// Get a player's position choice within the correct range of the array
+        /// Note: The ConsoleView is allowed access to the GameboardPosition struct.
+        /// </summary>
+        /// <returns>GameboardPosition</returns>
         public GameboardPosition GetPlayerPositionChoice()
         {
             //
