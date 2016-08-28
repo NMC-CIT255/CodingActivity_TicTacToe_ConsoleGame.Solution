@@ -68,8 +68,6 @@ namespace CodingActivity_TicTacToe_ConsoleGame
         {
             _positionState = new PlayerPiece[MAX_NUM_OF_ROWS_COLUMNS, MAX_NUM_OF_ROWS_COLUMNS];
 
-            _currentGameState = GameState.NewRound;
-
             InitializeGameboard();
         }
 
@@ -79,6 +77,8 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
         public void InitializeGameboard()
         {
+            _currentGameState = GameState.NewRound;
+
             //
             // Set all PlayerPiece array values to "None"
             //

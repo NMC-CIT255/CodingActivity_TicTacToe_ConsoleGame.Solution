@@ -15,6 +15,10 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
         private int _roundNumber;
 
+        private int _playerXWins;
+        private int _playerOWins;
+        private int _catsGames;
+
         private static Gameboard _gameboard = new Gameboard();
         private static ConsoleView _gameView = new ConsoleView(_gameboard);
 
@@ -35,6 +39,15 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             PlayGame();
         }
 
+
+
+        #endregion
+
+        #region METHODS
+
+        /// <summary>
+        /// Initialize the multi-round game
+        /// </summary>
         public void InitializeGame()
         {
             //
@@ -43,6 +56,9 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             _playingGame = true;
             _playingRound = true;
             _roundNumber = 1;
+            _playerOWins = 0;
+            _playerXWins = 0;
+            _catsGames = 0;
 
             //
             // Initialize game board status
@@ -50,9 +66,6 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             _gameboard.CurrentGameState = Gameboard.GameState.NewRound;
         }
 
-        #endregion
-
-        #region METHODS
 
         /// <summary>
         /// Game Loop
@@ -69,7 +82,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
                     _gameboard.UpdateGameboardState();
                 }
 
-                _gameView.DisplayCurrentPlayerStatus();
+                _gameView.DisplayCurrentGameStatus(_roundNumber, _playerXWins, _playerOWins);
 
                 if (_gameView.DisplayNewRoundPrompt())
                 {
@@ -77,7 +90,12 @@ namespace CodingActivity_TicTacToe_ConsoleGame
                     _gameView.InitializeView();
                     _playingRound = true;
                 }
+                else
+                {
+                    _playingGame = false;
+                }
             }
+            _gameView.DisplayClosingScreen();
         }
 
         /// <summary>
@@ -90,7 +108,6 @@ namespace CodingActivity_TicTacToe_ConsoleGame
                 case ConsoleView.ViewState.Active:
                     _gameView.DisplayGameArea();
 
-                    Gameboard.PlayerPiece currentPlayerPiece;
                     GameboardPosition gameboardPosition = new GameboardPosition();
 
                     switch (_gameboard.CurrentGameState)
@@ -101,27 +118,24 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
                         case Gameboard.GameState.PlayerXTurn:
                             ManagePlayerTurn(Gameboard.PlayerPiece.X);
-
-                            //currentPlayerPiece = Gameboard.PlayerPiece.X;
-                            //_gameView.GetPlayerPositionChoice(gameboardPosition);
-                            //if (_gameView.CurrentViewState == ConsoleView.ViewState.Active)
-                            //{
-                            //_gameboard.SetPlayerPiece(gameboardPosition, currentPlayerPiece);
-                            //}
                             break;
 
                         case Gameboard.GameState.PlayerOTurn:
-                            currentPlayerPiece = Gameboard.PlayerPiece.O;
-                            _gameView.GetPlayerPositionChoice(gameboardPosition);
-                            if (_gameView.CurrentViewState == ConsoleView.ViewState.Active)
-                            {
-                                _gameboard.SetPlayerPiece(gameboardPosition, currentPlayerPiece);
-                            }
+                            ManagePlayerTurn(Gameboard.PlayerPiece.O);
                             break;
 
                         case Gameboard.GameState.PlayerXWin:
+                            _playerXWins++;
+                            _playingRound = false;
+                            break;
+
                         case Gameboard.GameState.PlayerOWin:
+                            _playerOWins++;
+                            _playingRound = false;
+                            break;
+
                         case Gameboard.GameState.CatsGame:
+                            _catsGames++;
                             _playingRound = false;
                             break;
 

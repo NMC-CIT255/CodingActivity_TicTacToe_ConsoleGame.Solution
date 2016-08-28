@@ -58,14 +58,17 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
         #endregion
 
+        #region METHODS
+
+        /// <summary>
+        /// Initialize the console view
+        /// </summary>
         public void InitializeView()
         {
             _currentViewStat = ViewState.Active;
 
             InitializeConsole();
         }
-
-        #region METHODS
 
         /// <summary>
         /// configure the console window
@@ -174,6 +177,19 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             DisplayContinuePrompt();
         }
 
+        /// <summary>
+        /// display a closing screen when the user quits the application
+        /// </summary>
+        public void DisplayClosingScreen()
+        {
+            ConsoleUtil.HeaderText = "The Tic-tac-toe Game";
+            ConsoleUtil.DisplayReset();
+
+            ConsoleUtil.DisplayMessage("Thank you for using The Tic-tac-toe Game.");
+
+            DisplayContinuePrompt();
+        }
+
         public void DisplayGameArea()
         {
             ConsoleUtil.HeaderText = "Current Game Board";
@@ -183,10 +199,17 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             DisplayGameStatus();
         }
 
-        public void DisplayCurrentPlayerStatus()
+        public void DisplayCurrentGameStatus(int roundsPlayed, int playerXWins, int playerOWins)
         {
-            ConsoleUtil.HeaderText = "Current Player Status";
+            ConsoleUtil.HeaderText = "Current Game Status";
             ConsoleUtil.DisplayReset();
+
+            double playerXPercentageWins = playerXWins / roundsPlayed;
+            double playerOPercentageWins = playerOWins / roundsPlayed;
+
+            ConsoleUtil.DisplayMessage("Rounds Played: " + roundsPlayed);
+            ConsoleUtil.DisplayMessage("Rounds for Player X: " + playerXWins + " - " + String.Format("{0:0.##%}", playerXPercentageWins));
+            ConsoleUtil.DisplayMessage("Rounds for Player O: " + playerOWins + " - " + String.Format("{0:0.##%}", playerOPercentageWins));
 
             DisplayContinuePrompt();
         }
@@ -196,11 +219,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             ConsoleUtil.HeaderText = "Continue or Quit";
             ConsoleUtil.DisplayReset();
 
-            ConsoleUtil.DisplayPromptMessage("Do you want to play another round?");
-
-            DisplayContinuePrompt();
-
-            return true;
+            return DisplayGetYesNoPrompt("Would you like to play another round?");
         }
 
         public void DisplayGameStatus()
@@ -245,7 +264,6 @@ namespace CodingActivity_TicTacToe_ConsoleGame
                     break;
             }
         }
-
 
         public void DisplayMessageBox(string message)
         {
@@ -316,6 +334,46 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             Console.Write("Enter " + coordinateType + " number: ");
         }
 
+        /// <summary>
+        /// Display a Yes or No prompt with a message
+        /// </summary>
+        /// <param name="promptMessage">prompt message</param>
+        /// <returns>bool where true = yes</returns>
+        private bool DisplayGetYesNoPrompt(string promptMessage)
+        {
+            bool yesNoChoice = false;
+            bool validResponse = false;
+            string userResponse;
+
+            while (!validResponse)
+            {
+                ConsoleUtil.DisplayReset();
+
+                ConsoleUtil.DisplayPromptMessage(promptMessage + "(yes/no)");
+                userResponse = Console.ReadLine();
+
+                if (userResponse.ToUpper() == "YES")
+                {
+                    validResponse = true;
+                    yesNoChoice = true;
+                }
+                else if (userResponse.ToUpper() == "NO")
+                {
+                    validResponse = true;
+                    yesNoChoice = false;
+                }
+                else
+                {
+                    ConsoleUtil.DisplayMessage(
+                        "It appears that you have entered an incorrect response." +
+                        " Please enter either \"yes\" or \"no\"."
+                        );
+                    DisplayContinuePrompt();
+                }
+            }
+
+            return yesNoChoice;
+        }
 
         public GameboardPosition GetPlayerPositionChoice(GameboardPosition gameboardPosition)
         {
