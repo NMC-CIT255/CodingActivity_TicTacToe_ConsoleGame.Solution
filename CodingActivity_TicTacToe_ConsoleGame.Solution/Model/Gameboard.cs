@@ -82,9 +82,9 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             //
             // Set all PlayerPiece array values to "None"
             //
-            for (int row = 0; row < 3; row++)
+            for (int row = 0; row < MAX_NUM_OF_ROWS_COLUMNS; row++)
             {
-                for (int column = 0; column < 3; column++)
+                for (int column = 0; column < MAX_NUM_OF_ROWS_COLUMNS; column++)
                 {
                     _positionState[row, column] = PlayerPiece.None;
                 }

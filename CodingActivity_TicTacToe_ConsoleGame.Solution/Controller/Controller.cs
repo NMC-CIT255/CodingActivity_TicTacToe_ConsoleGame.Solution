@@ -55,7 +55,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             //
             _playingGame = true;
             _playingRound = true;
-            _roundNumber = 1;
+            _roundNumber = 0;
             _playerOWins = 0;
             _playerXWins = 0;
             _catsGames = 0;
@@ -63,7 +63,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             //
             // Initialize game board status
             //
-            _gameboard.CurrentGameState = Gameboard.GameState.NewRound;
+            _gameboard.InitializeGameboard();
         }
 
 
@@ -108,11 +108,12 @@ namespace CodingActivity_TicTacToe_ConsoleGame
                 case ConsoleView.ViewState.Active:
                     _gameView.DisplayGameArea();
 
-                    GameboardPosition gameboardPosition = new GameboardPosition();
+                    //GameboardPosition gameboardPosition = new GameboardPosition();
 
                     switch (_gameboard.CurrentGameState)
                     {
                         case Gameboard.GameState.NewRound:
+                            _roundNumber++;
                             _gameboard.CurrentGameState = Gameboard.GameState.PlayerXTurn;
                             break;
 
@@ -156,11 +157,14 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             }
         }
 
+        /// <summary>
+        /// Attempt to get a valid player move. 
+        /// </summary>
+        /// <param name="currentPlayerPiece">identify as either the X or O player</param>
         private void ManagePlayerTurn(Gameboard.PlayerPiece currentPlayerPiece)
         {
-            GameboardPosition gameboardPosition = new GameboardPosition();
+            GameboardPosition gameboardPosition = _gameView.GetPlayerPositionChoice();
 
-            _gameView.GetPlayerPositionChoice(gameboardPosition);
             if (_gameView.CurrentViewState == ConsoleView.ViewState.Active)
             {
                 _gameboard.SetPlayerPiece(gameboardPosition, currentPlayerPiece);

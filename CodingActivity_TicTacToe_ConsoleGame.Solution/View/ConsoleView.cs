@@ -204,12 +204,12 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             ConsoleUtil.HeaderText = "Current Game Status";
             ConsoleUtil.DisplayReset();
 
-            double playerXPercentageWins = playerXWins / roundsPlayed;
-            double playerOPercentageWins = playerOWins / roundsPlayed;
+            double playerXPercentageWins = (double)playerXWins / roundsPlayed;
+            double playerOPercentageWins = (double)playerOWins / roundsPlayed;
 
             ConsoleUtil.DisplayMessage("Rounds Played: " + roundsPlayed);
-            ConsoleUtil.DisplayMessage("Rounds for Player X: " + playerXWins + " - " + String.Format("{0:0.##%}", playerXPercentageWins));
-            ConsoleUtil.DisplayMessage("Rounds for Player O: " + playerOWins + " - " + String.Format("{0:0.##%}", playerOPercentageWins));
+            ConsoleUtil.DisplayMessage("Rounds for Player X: " + playerXWins + " - " + String.Format("{0:P2}", playerXPercentageWins));
+            ConsoleUtil.DisplayMessage("Rounds for Player O: " + playerOWins + " - " + String.Format("{0:P2}", playerOPercentageWins));
 
             DisplayContinuePrompt();
         }
@@ -375,13 +375,12 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             return yesNoChoice;
         }
 
-        public GameboardPosition GetPlayerPositionChoice(GameboardPosition gameboardPosition)
+        public GameboardPosition GetPlayerPositionChoice()
         {
             //
             // Initialize gameboardPosition with -1 values
             //
-            gameboardPosition.Row = -1;
-            gameboardPosition.Column = -1;
+            GameboardPosition gameboardPosition = new GameboardPosition(-1, -1);
 
             //
             // Get row number from player.
