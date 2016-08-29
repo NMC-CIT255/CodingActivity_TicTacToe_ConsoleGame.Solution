@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace CodingActivity_TicTacToe_ConsoleGame
 {
     /// <summary>
-    /// class to store the initial settings for the console window
+    /// Struct to store the initial settings for the console window
     /// </summary>
     public struct ConsoleConfig
     {

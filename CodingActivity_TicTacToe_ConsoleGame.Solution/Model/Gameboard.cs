@@ -76,7 +76,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
         #region METHODS
 
         /// <summary>
-        /// fill the game board array with "None" values
+        /// fill the game board array with "None" enum values
         /// </summary>
         public void InitializeGameboard()
         {
@@ -229,11 +229,14 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             //
             _positionState[gameboardPosition.Row - 1, gameboardPosition.Column - 1] = PlayerPiece;
 
+            //
+            // Change game board state to next player
+            //
             SetNextPlayer();
         }
 
         /// <summary>
-        /// Switch the game board state to the next player
+        /// Switch the game board state to the next player.
         /// </summary>
         private void SetNextPlayer()
         {

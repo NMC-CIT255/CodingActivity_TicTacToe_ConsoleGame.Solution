@@ -9,16 +9,25 @@ namespace CodingActivity_TicTacToe_ConsoleGame
     public class GameController
     {
         #region FIELDS
-
+        //
+        // track game and round status
+        //
         private bool _playingGame;
         private bool _playingRound;
 
         private int _roundNumber;
 
+        //
+        // track the results of multiple rounds
+        //
         private int _playerXNumberOfWins;
         private int _playerONumberOfWins;
         private int _numberOfCatsGames;
 
+        //
+        // instantiate  a Gameboard object
+        // instantiate a GameView object and give it access to the Gameboard object
+        //
         private static Gameboard _gameboard = new Gameboard();
         private static ConsoleView _gameView = new ConsoleView(_gameboard);
 
@@ -37,15 +46,13 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             InitializeGame();
             PlayGame();
         }
-
-
-
+        
         #endregion
 
         #region METHODS
 
         /// <summary>
-        /// Initialize the multi-round game
+        /// Initialize the multi-round game.
         /// </summary>
         public void InitializeGame()
         {
@@ -75,25 +82,52 @@ namespace CodingActivity_TicTacToe_ConsoleGame
 
             while (_playingGame)
             {
+                //
+                // Round loop
+                //
                 while (_playingRound)
                 {
+                    //
+                    // Perform the task associated with the current game and round state
+                    //
                     ManageGameStateTasks();
+
+                    //
+                    // Evaluate and update the current game board state
+                    //
                     _gameboard.UpdateGameboardState();
                 }
 
-                _gameView.DisplayCurrentGameStatus(_roundNumber, _playerXNumberOfWins, _playerONumberOfWins);
+                //
+                // Round Complete: Display the results
+                //
+                _gameView.DisplayCurrentGameStatus(_roundNumber, _playerXNumberOfWins, _playerONumberOfWins, _numberOfCatsGames);
 
-                if (_gameView.DisplayNewRoundPrompt())
+                //
+                // Confirm no major user errors
+                //
+                if (_gameView.CurrentViewState != ConsoleView.ViewState.PlayerUsedMaxAttempts ||
+                    _gameView.CurrentViewState != ConsoleView.ViewState.PlayerTimedOut)
                 {
-                    _gameboard.InitializeGameboard();
-                    _gameView.InitializeView();
-                    _playingRound = true;
+                    //
+                    // Prompt user to play another round
+                    //
+                    if (_gameView.DisplayNewRoundPrompt())
+                    {
+                        _gameboard.InitializeGameboard();
+                        _gameView.InitializeView();
+                        _playingRound = true;
+                    }
                 }
+                //
+                // Major user error recorded, end game
+                //
                 else
                 {
                     _playingGame = false;
                 }
             }
+
             _gameView.DisplayClosingScreen();
         }
 
@@ -148,6 +182,7 @@ namespace CodingActivity_TicTacToe_ConsoleGame
                 case ConsoleView.ViewState.PlayerUsedMaxAttempts:
                     _gameView.DisplayMaxAttemptsReachedScreen();
                     _playingRound = false;
+                    _playingGame = false;
                     break;
                 default:
                     break;
@@ -165,19 +200,22 @@ namespace CodingActivity_TicTacToe_ConsoleGame
         {
             GameboardPosition gameboardPosition = _gameView.GetPlayerPositionChoice();
 
-            //
-            // player chose an open position on the game board, add it to the game board
-            //
-            if (_gameboard.GameboardPositionAvailable(gameboardPosition))
+            if (_gameView.CurrentViewState != ConsoleView.ViewState.PlayerUsedMaxAttempts)
             {
-                _gameboard.SetPlayerPiece(gameboardPosition, currentPlayerPiece);
-            }
-            //
-            // player chose a taken position on the game board
-            //
-            else
-            {
-                _gameView.DisplayGamePositionChoiceNotAvailableScreen();
+                //
+                // player chose an open position on the game board, add it to the game board
+                //
+                if (_gameboard.GameboardPositionAvailable(gameboardPosition))
+                {
+                    _gameboard.SetPlayerPiece(gameboardPosition, currentPlayerPiece);
+                }
+                //
+                // player chose a taken position on the game board
+                //
+                else
+                {
+                    _gameView.DisplayGamePositionChoiceNotAvailableScreen();
+                }
             }
         }
 

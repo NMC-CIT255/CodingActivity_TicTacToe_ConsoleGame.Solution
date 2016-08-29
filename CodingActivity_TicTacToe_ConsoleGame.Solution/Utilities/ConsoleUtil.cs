@@ -12,6 +12,9 @@ namespace CodingActivity_TicTacToe_ConsoleGame
     /// </summary>
     public static class ConsoleUtil
     {
+        //
+        // set default values for console parameters
+        //
         #region FIELDS
 
         private static int _windowWidth = 79;

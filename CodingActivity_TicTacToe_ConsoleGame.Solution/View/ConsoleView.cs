@@ -219,19 +219,14 @@ namespace CodingActivity_TicTacToe_ConsoleGame
             DisplayGameStatus();
         }
 
-        public void DisplayCurrentGameStatus(int roundsPlayed, int playerXWins, int playerOWins)
+        public void DisplayCurrentGameStatus(int roundsPlayed, int playerXWins, int playerOWins, int catsGames)
         {
             ConsoleUtil.HeaderText = "Current Game Status";
             ConsoleUtil.DisplayReset();
 
-            int catsGames = roundsPlayed - playerXWins - playerOWins;
             double playerXPercentageWins = (double)playerXWins / roundsPlayed;
             double playerOPercentageWins = (double)playerOWins / roundsPlayed;
-            //
-            // Cat's games are calculated as a function of player win percentages to ensure
-            // all percentages add up to 100.
-            //
-            double percentageOfCatsGames = 1.0 - playerXPercentageWins - playerOPercentageWins;
+            double percentageOfCatsGames = (double)catsGames / roundsPlayed;
 
             ConsoleUtil.DisplayMessage("Rounds Played: " + roundsPlayed);
             ConsoleUtil.DisplayMessage("Rounds for Player X: " + playerXWins + " - " + String.Format("{0:P2}", playerXPercentageWins));
